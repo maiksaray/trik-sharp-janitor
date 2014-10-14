@@ -1,0 +1,8 @@
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\bin\Release\trik-janitor-sharp.exe.config
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\bin\Release\trik-janitor-sharp.exe
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\bin\Release\trik-janitor-sharp.pdb
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\bin\Release\Trik.Core.dll
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\bin\Release\Trik.Core.pdb
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\obj\Release\trik-janitor-sharp.csprojResolveAssemblyReference.cache
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\obj\Release\trik-janitor-sharp.exe
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\obj\Release\trik-janitor-sharp.pdb

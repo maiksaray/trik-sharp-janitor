@@ -1,0 +1,7 @@
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\bin\Debug\trik-janitor-sharp.exe.config
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\bin\Debug\trik-janitor-sharp.exe
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\bin\Debug\trik-janitor-sharp.pdb
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\bin\Debug\Trik.Core.dll
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\bin\Debug\Trik.Core.pdb
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\obj\Debug\trik-janitor-sharp.exe
+C:\Users\maiks_000\trik\trik-janitor-sharp\trik-janitor-sharp\obj\Debug\trik-janitor-sharp.pdb
