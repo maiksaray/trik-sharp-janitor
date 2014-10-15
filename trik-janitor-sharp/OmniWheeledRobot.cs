@@ -13,12 +13,12 @@ namespace trik_janitor_sharp
         public OmniWheeledRobot()
             : base()
         {
-            this._frontLeftMotor = Motor["M1"];
+            this._frontLeftMotor = Motor["M4"];
             //hacked
-            this._backLeftMotor = Motor["M3"];
-            this._backRightMotor = Motor["M4"];
+            this._backLeftMotor = Motor["M2"];
+            this._backRightMotor = Motor["M1"];
             //------
-            this._frontRightMotor = Motor["M2"];
+            this._frontRightMotor = Motor["M3"];
         }
 
 

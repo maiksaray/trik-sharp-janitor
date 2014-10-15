@@ -92,12 +92,27 @@ namespace trik_janitor_sharp
                             }
                         case "follow":
                             {
+                                robot.FollowDetection();
+                                break;
+                            }
+                        case "orient":
+                            {
                                 robot.FollowDetection(true);
                                 break;
                             }
                         case "stop":
                             {
                                 robot.StopFollowing();
+                                break;
+                            }
+                        case "sense":
+                        {
+                            robot.GetDetection();
+                            break;
+                        }
+                        case "radial":
+                            {
+                                robot.MoveRadial();
                                 break;
                             }
                         default:
@@ -117,7 +132,9 @@ namespace trik_janitor_sharp
                     }
                     cmd = Console.ReadLine();
                 }
+                Console.WriteLine("Bye");
             }
+            Console.WriteLine("Now, bye for sure");
         }
     }
 }

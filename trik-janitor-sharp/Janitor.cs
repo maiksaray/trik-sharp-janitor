@@ -12,7 +12,7 @@ namespace trik_janitor_sharp
         private readonly ObjectSensor _objectSensor;
         private readonly object _locker = new object();
         private bool _stopDetectingFlag;
-
+        private readonly AnalogSensor _frontSensor;
         public Janitor()
             : base()
         {
@@ -22,25 +22,28 @@ namespace trik_janitor_sharp
                                                                     "/run/object-sensor.out.fifo");
             _objectSensor = ObjectSensor;
             _objectSensor.Start();
+            _frontSensor = AnalogSensor[Trik.Ports.Sensor.A1.ToString()];
         }
 
 
         public void RotateToCenter()
         {
             var loc = _objectSensor.Read();
-            if (loc.Mass > 0) return;
-            while (loc.Mass == 0)
+            if (loc.Mass <= 5)
             {
                 StartRotate();
-                loc = _objectSensor.Read();
+                while (loc.Mass <= 5)
+                {
+                    loc = _objectSensor.Read();
+                }
             }
             Stop();
-            FollowDetection();
+            FollowDetection(true);
         }
 
         public void LearnCenter()
         {
-            _objectSensor.Detect(new Collections.HSV(0, 20, 70, 30, 60, 40));
+            _objectSensor.Detect(new Collections.HSV(0, 20, 70, 30, 80, 20));
         }
 
         public void TraceDetection()
@@ -55,7 +58,7 @@ namespace trik_janitor_sharp
             {
                 _stopDetectingFlag = false;
             }
-            var worker = new Thread(new ParameterizedThreadStart(DoFollowDetection));
+            var worker = new Thread(DoFollowDetection);
             worker.Start(continual);
         }
 
@@ -83,14 +86,13 @@ namespace trik_janitor_sharp
                         __rotationCounter += Math.Sign(loc.X);
                     else
                         __rotationCounter = 0;
-                    if (Math.Abs(__rotationCounter) > 10) _stopDetectingFlag = true;
+                    if (Math.Abs(__rotationCounter) > 15) _stopDetectingFlag = true;
                 }
                 lock (_locker)
                 {
-                    if (_stopDetectingFlag)
-                    {
-                        break;
-                    }
+                    if (!_stopDetectingFlag) continue;
+                    StopRotation();
+                    break;
                 }
             }
         }
@@ -116,7 +118,7 @@ namespace trik_janitor_sharp
 
         public void Kick(int power = 100)
         {
-            const int millisecondsTimeout = 150;
+            const int millisecondsTimeout = 100;
             _kicker.SetPower(-100);
             Thread.Sleep(millisecondsTimeout);
             _kicker.Release();
@@ -136,14 +138,22 @@ namespace trik_janitor_sharp
 
         }
 
-        //        public void Dispose()
-        //        {
-        //            _objectSensor.Dispose();
-        //        }
+        public void GetDetection()
+        {
+            Console.WriteLine(_frontSensor.Read());
+        }
 
         public void Kicker(int power)
         {
             _kicker.SetPower(power);
+        }
+
+        public void MoveRadial()
+        {
+            _frontRightMotor.SetPower(50);
+            _frontLeftMotor.SetPower(50);
+            _backLeftMotor.SetPower(-100);
+            _backRightMotor.SetPower(-100);
         }
     }
 }
