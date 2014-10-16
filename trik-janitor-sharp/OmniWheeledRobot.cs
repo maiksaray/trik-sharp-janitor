@@ -5,22 +5,52 @@ namespace trik_janitor_sharp
 {
     class OmniWheeledRobot : Model
     {
-        public readonly PowerMotor _frontRightMotor;
-        public readonly PowerMotor _frontLeftMotor;
-        public readonly PowerMotor _backRightMotor;
-        public readonly PowerMotor _backLeftMotor;
+        private PowerMotor _frontRightMotor;
+        private PowerMotor _frontLeftMotor;
+        private PowerMotor _backRightMotor;
+        private PowerMotor _backLeftMotor;
+        private static readonly OmniConfig DefaultConfig = new OmniConfig { Facing = Facing.Front, LegLength = 15, WheelSize = 30 };
 
-        public OmniWheeledRobot()
-            : base()
+        public OmniWheeledRobot(OmniConfig config = null)
         {
-            this._frontLeftMotor = Motor["M4"];
-            //hacked
-            this._backLeftMotor = Motor["M2"];
-            this._backRightMotor = Motor["M1"];
-            //------
-            this._frontRightMotor = Motor["M3"];
+            if (config == null) config = DefaultConfig;
+
+            InitPowerMotors(config.Facing);
         }
 
+        private void InitPowerMotors(Facing facing)
+        {
+            switch (facing)
+            {
+                case Facing.Front:
+                    {
+                        _backLeftMotor = Motor["M2"];
+                        _backRightMotor = Motor["M1"];
+                        _frontRightMotor = Motor["M3"];
+                        _frontLeftMotor = Motor["M4"];
+                        break;
+                    }
+                case Facing.Back:
+                    {
+                        _backLeftMotor = Motor["M3"];
+                        _backRightMotor = Motor["M4"];
+                        _frontRightMotor = Motor["M2"];
+                        _frontLeftMotor = Motor["M1"];
+                        break;
+                    }
+                case Facing.Custom:
+                    {
+                        break;
+                    }
+                default:
+                    throw new ArgumentOutOfRangeException("facing");
+            }
+        }
+
+        public void InitMotors()
+        {
+            
+        }
 
         public void MoveForward()
         {
@@ -29,26 +59,17 @@ namespace trik_janitor_sharp
 
         public void MoveBackward()
         {
-            _frontRightMotor.SetPower(50);
-            _frontLeftMotor.SetPower(-50);
-            _backLeftMotor.SetPower(50);
-            _backRightMotor.SetPower(-50);
+            MoveStraight(angle: 180);
         }
 
         public void MoveRightward()
         {
-            _frontRightMotor.SetPower(50);
-            _frontLeftMotor.SetPower(50);
-            _backLeftMotor.SetPower(-50);
-            _backRightMotor.SetPower(-50);
+            MoveStraight(angle: 90);
         }
 
         public void MoveLeftWard()
         {
-            _frontRightMotor.SetPower(-50);
-            _frontLeftMotor.SetPower(-50);
-            _backLeftMotor.SetPower(50);
-            _backRightMotor.SetPower(50);
+            MoveStraight(angle: -90);
         }
 
         public void StopRotation()
@@ -80,8 +101,8 @@ namespace trik_janitor_sharp
                 DoStartMoving(angle);
             else
             {
-                var fraction = rotation / distance;
-                DoStartMoving(angle + fraction);
+                //                var fraction = rotation / distance;
+                //                DoStartMoving(angle + fraction);
             }
         }
 
@@ -95,11 +116,9 @@ namespace trik_janitor_sharp
             double lPower = 0;
             if (angle <= 45 && angle >= -45)
             {
-                Console.WriteLine("[-45;45]");
                 if (angle <= 45 && angle >= 0)
                 {
                     rPower = 100;
-                    //full-metal kostyl
                     lPower = 100 - (angle / 45) * 100;
                 }
                 if (angle < 0 && angle >= -45)
@@ -107,28 +126,18 @@ namespace trik_janitor_sharp
                     lPower = 100;
                     rPower = 100 - (-angle / 45) * 100;
                 }
-                Console.WriteLine("rpower:" + rPower);
-                Console.WriteLine("lpower:" + lPower);
                 _frontLeftMotor.SetPower((int)rPower);
-                Console.Write("FL:" + rPower);
                 _backRightMotor.SetPower(-(int)rPower);
-                Console.Write("BR:-" + rPower);
                 _frontRightMotor.SetPower(-(int)lPower);
-                Console.Write("FR:-" + lPower);
                 _backLeftMotor.SetPower((int)lPower);
-                Console.Write("BL:" + lPower);
-                Console.WriteLine();
                 return;
             }
             if (angle < -45 && angle >= -135)
             {
-                Console.WriteLine("[-135;-45]");
                 angle = angle + 90;
-                Console.WriteLine("now " + angle);
                 if (angle <= 45 && angle >= 0)
                 {
                     rPower = 100;
-                    //full-metal kostyl
                     lPower = 100 - (angle / 45) * 100;
                 }
                 if (angle < 0 && angle >= -45)
@@ -136,28 +145,18 @@ namespace trik_janitor_sharp
                     lPower = 100;
                     rPower = 100 - (-angle / 45) * 100;
                 }
-                Console.WriteLine("rpower:" + rPower);
-                Console.WriteLine("lpower:" + lPower);
                 _backLeftMotor.SetPower((int)rPower);
-                Console.Write("FL:" + rPower);
                 _frontRightMotor.SetPower(-(int)rPower);
-                Console.Write("BR:-" + rPower);
                 _frontLeftMotor.SetPower(-(int)lPower);
-                Console.Write("FR:-" + lPower);
                 _backRightMotor.SetPower((int)lPower);
-                Console.Write("BL:" + lPower);
-                Console.WriteLine();
                 return;
             }
             if (angle <= 135 && angle >= 45)
             {
-                Console.WriteLine("[45;135]");
                 angle = angle - 90;
-                Console.WriteLine("now " + angle);
                 if (angle <= 45 && angle >= 0)
                 {
                     rPower = 100;
-                    //full-metal kostyl
                     lPower = 100 - (angle / 45) * 100;
                 }
                 if (angle < 0 && angle >= -45)
@@ -165,29 +164,19 @@ namespace trik_janitor_sharp
                     lPower = 100;
                     rPower = 100 - (-angle / 45) * 100;
                 }
-                Console.WriteLine("rpower:" + rPower);
-                Console.WriteLine("lpower:" + lPower);
                 _frontRightMotor.SetPower((int)rPower);
-                Console.Write("FL:" + rPower);
                 _backLeftMotor.SetPower(-(int)rPower);
-                Console.Write("BR    :-" + rPower);
                 _backRightMotor.SetPower(-(int)lPower);
-                Console.Write("FR:-" + lPower);
                 _frontLeftMotor.SetPower((int)lPower);
-                Console.Write("BL:" + lPower);
-                Console.WriteLine();
                 return;
             }
-            //from 135 to 225 or (from -135 to -180 and from 135 to 180)
-            Console.WriteLine("[135; -135]");
-            if (angle > 0) angle = angle - 180;
-            else angle = angle + 180;
-            Console.WriteLine("now:" + angle);
-
+            if (angle > 0)
+                angle = angle - 180;
+            else
+                angle = angle + 180;
             if (angle <= 45 && angle >= 0)
             {
                 rPower = 100;
-                //full-metal kostyl
                 lPower = 100 - (angle / 45) * 100;
             }
             if (angle < 0 && angle >= -45)
@@ -195,17 +184,10 @@ namespace trik_janitor_sharp
                 lPower = 100;
                 rPower = 100 - (-angle / 45) * 100;
             }
-            Console.WriteLine("rpower:" + rPower);
-            Console.WriteLine("lpower:" + lPower);
             _backLeftMotor.SetPower(-(int)lPower);
-            Console.Write("FL:" + rPower);
             _frontRightMotor.SetPower((int)lPower);
-            Console.Write("BR:-" + rPower);
             _frontLeftMotor.SetPower(-(int)rPower);
-            Console.Write("FR:-" + lPower);
             _backRightMotor.SetPower((int)rPower);
-            Console.Write("BL:" + lPower);
-            Console.WriteLine();
         }
 
         /// <summary>
@@ -227,6 +209,14 @@ namespace trik_janitor_sharp
         public void JustRotate(double rotation)
         {
 
+        }
+
+        public void MoveRadial()
+        {
+            _frontRightMotor.SetPower(50);
+            _frontLeftMotor.SetPower(50);
+            _backLeftMotor.SetPower(-100);
+            _backRightMotor.SetPower(-100);
         }
 
         public void Stop()

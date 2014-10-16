@@ -22,7 +22,7 @@ namespace trik_janitor_sharp
                                                                     "/run/object-sensor.out.fifo");
             _objectSensor = ObjectSensor;
             _objectSensor.Start();
-            _frontSensor = AnalogSensor[Trik.Ports.Sensor.A1.ToString()];
+            _frontSensor = AnalogSensor["A1"];
         }
 
 
@@ -128,9 +128,15 @@ namespace trik_janitor_sharp
             _kicker.Release();
         }
 
+        private const int __centerSensorValue = 500;
         private void MoveToNextObstacle()
         {
-
+            var val = _frontSensor.Read();
+            while (val > __centerSensorValue)
+            {
+                MoveRadial();
+                val = _frontSensor.Read();
+            }
         }
 
         private void DetectNextObstacle()
