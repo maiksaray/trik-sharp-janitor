@@ -45,7 +45,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Facing.cs" />
     <Compile Include="Janitor.cs" />
+    <Compile Include="OmniConfig.cs" />
     <Compile Include="OmniWheeledRobot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

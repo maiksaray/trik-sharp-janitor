@@ -22,7 +22,7 @@ namespace trik_janitor_sharp
         {
             switch (facing)
             {
-                case Facing.Front:
+                case Facing.Back:
                     {
                         _backLeftMotor = Motor["M2"];
                         _backRightMotor = Motor["M1"];
@@ -30,7 +30,7 @@ namespace trik_janitor_sharp
                         _frontLeftMotor = Motor["M4"];
                         break;
                     }
-                case Facing.Back:
+                case Facing.Front:
                     {
                         _backLeftMotor = Motor["M3"];
                         _backRightMotor = Motor["M4"];
@@ -45,11 +45,6 @@ namespace trik_janitor_sharp
                 default:
                     throw new ArgumentOutOfRangeException("facing");
             }
-        }
-
-        public void InitMotors()
-        {
-            
         }
 
         public void MoveForward()
@@ -83,7 +78,7 @@ namespace trik_janitor_sharp
         /// <param name="clockwise">clockwise if true, default is true</param>
         public void StartRotate(bool clockwise = true, int power = 100)
         {
-            power = clockwise ? power : -power;
+            power = !clockwise ? power : -power;
             _backLeftMotor.SetPower(power);
             _backRightMotor.SetPower(power);
             _frontLeftMotor.SetPower(power);
@@ -213,10 +208,10 @@ namespace trik_janitor_sharp
 
         public void MoveRadial()
         {
-            _frontRightMotor.SetPower(50);
-            _frontLeftMotor.SetPower(50);
-            _backLeftMotor.SetPower(-100);
-            _backRightMotor.SetPower(-100);
+            _frontRightMotor.SetPower(100);
+            _frontLeftMotor.SetPower(100);
+            _backLeftMotor.SetPower(-50);
+            _backRightMotor.SetPower(-20);
         }
 
         public void Stop()

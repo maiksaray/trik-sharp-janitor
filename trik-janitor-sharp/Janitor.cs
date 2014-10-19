@@ -25,6 +25,7 @@ namespace trik_janitor_sharp
             _frontSensor = AnalogSensor["A1"];
         }
 
+        #region object sensor
 
         public void RotateToCenter()
         {
@@ -43,7 +44,7 @@ namespace trik_janitor_sharp
 
         public void LearnCenter()
         {
-            _objectSensor.Detect(new Collections.HSV(0, 20, 70, 30, 80, 20));
+            _objectSensor.Detect(new Collections.HSV(0, 20, 70, 30, 60, 25));
         }
 
         public void TraceDetection()
@@ -59,6 +60,7 @@ namespace trik_janitor_sharp
                 _stopDetectingFlag = false;
             }
             var worker = new Thread(DoFollowDetection);
+            worker.IsBackground = true;
             worker.Start(continual);
         }
 
@@ -105,48 +107,36 @@ namespace trik_janitor_sharp
             }
         }
 
-        public void StartJob()
+        #endregion
+
+        #region sense-kicking
+
+        private bool _stopSensingFlag;
+        public void StartSensing()
+        {
+            lock (_locker) _stopSensingFlag = false;
+            var kickingThread = new Thread(DoSenseKick);
+            kickingThread.IsBackground = true;
+            kickingThread.Start();
+        }
+
+        private void DoSenseKick()
         {
             while (true)
             {
-                RotateToCenter();
-                DetectNextObstacle();
-                MoveToNextObstacle();
-                Kick();
+                if (_frontSensor.Read() > __enclosureSensorValue)
+                    Kick();
+                lock (_locker)
+                {
+                    if (_stopSensingFlag) break;
+                }
             }
         }
 
-        public void Kick(int power = 100)
+        public void StopSensing()
         {
-            const int millisecondsTimeout = 100;
-            _kicker.SetPower(-100);
-            Thread.Sleep(millisecondsTimeout);
-            _kicker.Release();
-            Thread.Sleep(millisecondsTimeout);
-            _kicker.SetPower(100);
-            Thread.Sleep(millisecondsTimeout);
-            _kicker.Release();
-        }
-
-        private const int __centerSensorValue = 500;
-        private void MoveToNextObstacle()
-        {
-            var val = _frontSensor.Read();
-            while (val > __centerSensorValue)
-            {
-                MoveRadial();
-                val = _frontSensor.Read();
-            }
-        }
-
-        private void DetectNextObstacle()
-        {
-
-        }
-
-        public void GetDetection()
-        {
-            Console.WriteLine(_frontSensor.Read());
+            lock (_locker)
+                _stopSensingFlag = true;
         }
 
         public void Kicker(int power)
@@ -154,12 +144,65 @@ namespace trik_janitor_sharp
             _kicker.SetPower(power);
         }
 
-        public void MoveRadial()
+        public void Kick(int power = 100)
         {
-            _frontRightMotor.SetPower(50);
-            _frontLeftMotor.SetPower(50);
-            _backLeftMotor.SetPower(-100);
-            _backRightMotor.SetPower(-100);
+
+            const int millisecondsTimeout = 100;
+            _kicker.SetPower(100);
+            Thread.Sleep(millisecondsTimeout / 4);
+            _kicker.SetPower(-100);
+            Thread.Sleep(millisecondsTimeout);
+            _kicker.Release();
+            //            Thread.Sleep(millisecondsTimeout);
+            _kicker.SetPower(100);
+            Thread.Sleep((int)(millisecondsTimeout * 2));
+            _kicker.Release();
         }
+
+        #endregion
+
+        private const int __centerSensorValue = 450;
+        private void MoveToNextObstacle()
+        {
+            var val = _frontSensor.Read();
+            while (val < __centerSensorValue)
+            {
+                MoveRadial();
+                val = _frontSensor.Read();
+            }
+        }
+
+        private const int __enclosureSensorValue = 900;
+
+        private void EncloseObstacle()
+        {
+            var val = _frontSensor.Read();
+            while (val < __enclosureSensorValue)
+            {
+                MoveForward();
+                val = _frontSensor.Read();
+            }
+        }
+
+        public void GetDetection()
+        {
+            Console.WriteLine(_frontSensor.Read());
+        }
+
+
+        public void StartJob()
+        {
+            RotateToCenter();
+            for (int i = 0; i < 8; i++)
+            {
+                MoveToNextObstacle();
+                EncloseObstacle();
+                Kick();
+                MoveBackward();
+                Thread.Sleep(100);
+            }
+        }
+
+
     }
 }

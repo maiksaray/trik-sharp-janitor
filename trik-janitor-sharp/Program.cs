@@ -17,22 +17,22 @@ namespace trik_janitor_sharp
                     {
                         case "fr":
                             {
-                                robot._frontRightMotor.SetPower(100);
+//                                robot._frontRightMotor.SetPower(100);
                                 break;
                             }
                         case "br":
                             {
-                                robot._backRightMotor.SetPower(100);
+//                                robot._backRightMotor.SetPower(100);
                                 break;
                             }
                         case "bl":
                             {
-                                robot._backLeftMotor.SetPower(100);
+//                                robot._backLeftMotor.SetPower(100);
                                 break;
                             }
                         case "fl":
                             {
-                                robot._frontLeftMotor.SetPower(100);
+//                                robot._frontLeftMotor.SetPower(100);
                                 break;
                             }
                         case "f":
@@ -110,6 +110,16 @@ namespace trik_janitor_sharp
                             robot.GetDetection();
                             break;
                         }
+                        case "kickass":
+                        {
+                            robot.StartSensing();
+                            break;
+                        }
+                        case "stops":
+                        {
+                            robot.StopSensing();
+                            break;
+                        }
                         case "radial":
                             {
                                 robot.MoveRadial();
@@ -117,17 +127,25 @@ namespace trik_janitor_sharp
                             }
                         default:
                             {
-                                if (cmd.StartsWith("m"))
+                                try
                                 {
-                                    var angle = int.Parse(cmd.Substring(1));
-                                    robot.MoveStraight(angle: angle);
+                                    if (cmd.StartsWith("m"))
+                                    {
+                                        var angle = int.Parse(cmd.Substring(1));
+                                        robot.MoveStraight(angle: angle);
+                                    }
+                                    if (cmd.StartsWith("k"))
+                                    {
+                                        var power = int.Parse(cmd.Substring(1));
+                                        robot.Kicker(power);
+                                    }
+                                    break;
                                 }
-                                if (cmd.StartsWith("k"))
+                                catch (Exception e)
                                 {
-                                    var power = int.Parse(cmd.Substring(1));
-                                    robot.Kicker(power);
+                                    Console.WriteLine("invalid input");
+                                    break;
                                 }
-                                break;
                             }
                     }
                     cmd = Console.ReadLine();
