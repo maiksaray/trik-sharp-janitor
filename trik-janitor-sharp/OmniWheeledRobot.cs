@@ -93,15 +93,8 @@ namespace trik_janitor_sharp
         public void MoveStraight(double distance = Double.PositiveInfinity, double angle = 0, double rotation = 0)
         {
             if (Double.IsInfinity(distance) || distance == 0)
-                DoStartMoving(angle);
-            else
-            {
-                //                var fraction = rotation / distance;
-                //                DoStartMoving(angle + fraction);
-            }
+                DoStartMoving(angle);           
         }
-
-        private double _currentAngle;
 
         private void DoStartMoving(double angle)
         {
@@ -185,26 +178,6 @@ namespace trik_janitor_sharp
             _backRightMotor.SetPower((int)rPower);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="distance"></param>
-        /// <param name="angle"></param>
-        /// <param name="radius">curvature radius</param>
-        /// <param name="rotation">rotation angle in degrees</param>
-        public void MoveCurve(double distance, double angle, double radius, double rotation = 0)
-        {
-
-        }
-
-        /// <summary>
-        /// Should be deprecated, now just exists
-        /// </summary>
-        /// <param name="rotation">In degrees</param>
-        public void JustRotate(double rotation)
-        {
-
-        }
 
         public void MoveRadial()
         {

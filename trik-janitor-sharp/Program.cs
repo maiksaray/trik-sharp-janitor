@@ -15,26 +15,6 @@ namespace trik_janitor_sharp
                 {
                     switch (cmd)
                     {
-                        case "fr":
-                            {
-//                                robot._frontRightMotor.SetPower(100);
-                                break;
-                            }
-                        case "br":
-                            {
-//                                robot._backRightMotor.SetPower(100);
-                                break;
-                            }
-                        case "bl":
-                            {
-//                                robot._backLeftMotor.SetPower(100);
-                                break;
-                            }
-                        case "fl":
-                            {
-//                                robot._frontLeftMotor.SetPower(100);
-                                break;
-                            }
                         case "f":
                             {
                                 robot.MoveForward();
@@ -106,24 +86,28 @@ namespace trik_janitor_sharp
                                 break;
                             }
                         case "sense":
-                        {
-                            robot.GetDetection();
-                            break;
-                        }
+                            {
+                                robot.GetDetection();
+                                break;
+                            }
                         case "kickass":
-                        {
-                            robot.StartSensing();
-                            break;
-                        }
+                            {
+                                robot.StartSensing();
+                                break;
+                            }
                         case "stops":
-                        {
-                            robot.StopSensing();
-                            break;
-                        }
+                            {
+                                robot.StopSensing();
+                                break;
+                            }
                         case "radial":
                             {
                                 robot.MoveRadial();
                                 break;
+                            }
+                        case "start":
+                            {
+                                robot.StartJob();
                             }
                         default:
                             {
@@ -133,12 +117,7 @@ namespace trik_janitor_sharp
                                     {
                                         var angle = int.Parse(cmd.Substring(1));
                                         robot.MoveStraight(angle: angle);
-                                    }
-                                    if (cmd.StartsWith("k"))
-                                    {
-                                        var power = int.Parse(cmd.Substring(1));
-                                        robot.Kicker(power);
-                                    }
+                                    }                                   
                                     break;
                                 }
                                 catch (Exception e)
